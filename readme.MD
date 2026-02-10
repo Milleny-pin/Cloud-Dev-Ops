@@ -90,3 +90,5 @@ docker-compose up -d
 
 # Validar se todos os containers estão em execução
 docker ps
+
+VIDEO YOUTUBE: https://youtu.be/JVqjPnEzdVg?si=1zlbcBGM8yp8ZttF
