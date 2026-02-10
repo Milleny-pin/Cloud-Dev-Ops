@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-loja
+    restart: always
+    environment:
+      - POSTGRES_DB=cloud_loja
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=mimi123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rede-loja-cloud
+
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: gateway-loja
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pedidos
+      - pagamentos
+      - estoque
+    networks:
+      - rede-loja-cloud
+
+
+  pedidos:
+    build: ./pedidos
+    container_name: pedidos-loja
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=admin
+      - DB_PASSWORD=mimi123
+      - DB_NAME=cloud_loja
+    depends_on:
+      - postgres
+    networks:
+      - rede-loja-cloud
+
+  
+  pagamentos:
+    build: ./pagamentos
+    container_name: pagamentos-loja
+    networks:
+      - rede-loja-cloud
+
+  
+  estoque:
+    build: ./estoque
+    container_name: estoque-loja
+    networks:
+      - rede-loja-cloud
+
+
+networks:
+  rede-loja-cloud:
+    driver: bridge
+
+volumes:
+  postgres_data:

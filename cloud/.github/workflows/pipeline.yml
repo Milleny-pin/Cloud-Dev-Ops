@@ -1,0 +1,31 @@
+name: Loja cloud CI/CD
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Linter & Testes (Node.js)
+        run: |
+          # Testa o serviço de Pedidos
+          cd pedidos && npm install
+          # npm test (descomentar quando tiver testes)
+          cd ..
+          
+          
+          cd api-gateway && npm install
+          cd ..
+
+      - name: Build Docker Images (Simulado)
+        run: |
+          # Build de todos os serviços para garantir que o Dockerfile de nenhum está com erro
+          docker build -t loja-veloz/api-gateway:latest ./api-gateway
+          docker build -t loja-veloz/pedidos:latest ./pedidos
+          docker build -t loja-veloz/estoque:latest ./estoque
+          docker build -t loja-veloz/pagamentos:latest ./pagamentos
+
+      - name: Security Scan (Opcional - Ponto Extra)
+        run: echo "Simulando varredura de vulnerabilidades nas imagens..."
